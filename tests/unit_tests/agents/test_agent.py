@@ -49,6 +49,7 @@ def _get_agent(**kwargs: Any) -> AgentExecutor:
         "Oh well\nFinal Answer: curses foiled again",
     ]
     fake_llm = FakeListLLM(responses=responses)
+
     tools = [
         Tool(
             name="Search",
@@ -61,10 +62,6 @@ def _get_agent(**kwargs: Any) -> AgentExecutor:
             description="Useful for looking up things in a table",
         ),
     ]
-    
-    if "tools" in kwargs:
-        tools = kwargs.get("tools")
-        del kwargs["tools"]
 
     agent = initialize_agent(
         tools,

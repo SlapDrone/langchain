@@ -59,7 +59,8 @@ class AgentExecutorIterator(BaseAgentExecutorIterator):
         self.tags = tags 
         self.include_run_info = include_run_info
         self.run_manager = None
-    
+        self.reset()
+
     @property
     def inputs(self) -> dict[str, str]:
         return self._inputs

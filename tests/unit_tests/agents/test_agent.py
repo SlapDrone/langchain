@@ -28,7 +28,7 @@ class FakeListLLM(LLM):
         print(self.responses[self.i])
         return self.responses[self.i]
 
-    async def _acall(self, *args, **kwargs):
+    async def _acall(self, *args: Any, **kwargs: Any) -> str:
         return self._call(*args, **kwargs)
 
     @property

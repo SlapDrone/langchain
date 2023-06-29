@@ -28,6 +28,9 @@ class FakeListLLM(LLM):
         print(self.responses[self.i])
         return self.responses[self.i]
 
+    async def _acall(self, *args: Any, **kwargs: Any) -> str:
+        return self._call(*args, **kwargs)
+
     def get_num_tokens(self, text: str) -> int:
         """Return number of tokens in text."""
         return len(text.split())
@@ -49,7 +52,8 @@ def _get_agent(**kwargs: Any) -> AgentExecutor:
         f"I'm turning evil\nAction: {bad_action_name}\nAction Input: misalignment",
         "Oh well\nFinal Answer: curses foiled again",
     ]
-    fake_llm = FakeListLLM(responses=responses)
+    fake_llm = FakeListLLM(cache=False, responses=responses)
+
     tools = [
         Tool(
             name="Search",
@@ -62,6 +66,7 @@ def _get_agent(**kwargs: Any) -> AgentExecutor:
             description="Useful for looking up things in a table",
         ),
     ]
+
     agent = initialize_agent(
         tools,
         fake_llm,
@@ -194,6 +199,7 @@ def test_agent_tool_return_direct_in_intermediate_steps() -> None:
     )
 
     resp = agent("when was langchain made")
+    assert isinstance(resp, dict)
     assert resp["output"] == "misalignment"
     assert len(resp["intermediate_steps"]) == 1
     action, _action_intput = resp["intermediate_steps"][0]
